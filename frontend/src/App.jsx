@@ -25,7 +25,7 @@ function App() {
         <Route path="/how"         element={<HowItWorksPage />} />
         <Route path="/scholarships" element={<ScholarshipsPage />} />
         <Route path="/checker"     element={<CheckerPage />} />
-        <Route path="/team"        element={<TeamPage />} />
+        {/* <Route path="/team"        element={<TeamPage />} /> */}
         <Route path="/register"    element={<RegisterPage />} />
         <Route path="/contact"     element={<ContactPage />} />
         <Route path="*"            element={<NotFound />} />
