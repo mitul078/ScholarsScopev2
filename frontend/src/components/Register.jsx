@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
@@ -10,6 +11,8 @@ function FieldError({ msg }) {
 }
 
 export default function Register() {
+  const { login } = useAuth();
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [done, setDone] = useState(false);
   const [errors, setErrors] = useState({});
@@ -80,8 +83,14 @@ export default function Register() {
         body: JSON.stringify(form),
       });
       const data = await res.json();
-      if (data.success) setDone(true);
-      else alert(data.message || 'Registration failed.');
+      if (data.success) {
+        // Save student data to global auth context
+        login({ ...form, _id: data.studentId });
+        // Redirect to profile page
+        navigate('/profile');
+      } else {
+        alert(data.message || 'Registration failed.');
+      }
     } catch {
       alert('Server error. Please try again.');
     } finally {
@@ -162,7 +171,7 @@ export default function Register() {
                   <label>State of Domicile <span className="req">*</span></label>
                   <select value={form.state} onChange={set('state')} className={errors.state ? 'error' : ''}>
                     <option value="">Select state</option>
-                    {['Gujarat','Maharashtra','Rajasthan','Madhya Pradesh','Uttar Pradesh','Bihar','West Bengal','Tamil Nadu','Karnataka','Other'].map(s => <option key={s}>{s}</option>)}
+                    {['Gujarat', 'Maharashtra', 'Rajasthan', 'Madhya Pradesh', 'Uttar Pradesh', 'Bihar', 'West Bengal', 'Tamil Nadu', 'Karnataka', 'Other'].map(s => <option key={s}>{s}</option>)}
                   </select>
                   <FieldError msg={errors.state} />
                 </div>
@@ -185,7 +194,7 @@ export default function Register() {
                   <label>Course / Degree <span className="req">*</span></label>
                   <select value={form.course} onChange={set('course')} className={errors.course ? 'error' : ''}>
                     <option value="">Select course</option>
-                    {['B.E. / B.Tech','B.Sc','B.Com','B.A','Diploma','M.Tech / M.E','MBA','Other'].map(c => <option key={c}>{c}</option>)}
+                    {['B.E. / B.Tech', 'B.Sc', 'B.Com', 'B.A', 'Diploma', 'M.Tech / M.E', 'MBA', 'Other'].map(c => <option key={c}>{c}</option>)}
                   </select>
                   <FieldError msg={errors.course} />
                 </div>
@@ -194,7 +203,7 @@ export default function Register() {
                   <label>Current Semester / Year <span className="req">*</span></label>
                   <select value={form.semester} onChange={set('semester')} className={errors.semester ? 'error' : ''}>
                     <option value="">Select semester</option>
-                    {['1st Sem','2nd Sem','3rd Sem','4th Sem','5th Sem','6th Sem','7th Sem','8th Sem'].map(s => <option key={s}>{s}</option>)}
+                    {['1st Sem', '2nd Sem', '3rd Sem', '4th Sem', '5th Sem', '6th Sem', '7th Sem', '8th Sem'].map(s => <option key={s}>{s}</option>)}
                   </select>
                   <FieldError msg={errors.semester} />
                 </div>
@@ -218,7 +227,7 @@ export default function Register() {
                   <label>Category <span className="req">*</span></label>
                   <select value={form.category} onChange={set('category')} className={errors.category ? 'error' : ''}>
                     <option value="">Select category</option>
-                    {['General','OBC','SC','ST','EWS'].map(c => <option key={c}>{c}</option>)}
+                    {['General', 'OBC', 'SC', 'ST', 'EWS'].map(c => <option key={c}>{c}</option>)}
                   </select>
                   <FieldError msg={errors.category} />
                 </div>
@@ -229,7 +238,7 @@ export default function Register() {
                   <label>Do you have any disability?</label>
                   <select value={form.disability} onChange={set('disability')}>
                     <option value="">Select</option>
-                    {['No','Yes — Visual Impairment','Yes — Hearing Impairment','Yes — Physical Disability','Yes — Other'].map(d => <option key={d}>{d}</option>)}
+                    {['No', 'Yes — Visual Impairment', 'Yes — Hearing Impairment', 'Yes — Physical Disability', 'Yes — Other'].map(d => <option key={d}>{d}</option>)}
                   </select>
                 </div>
                 {inp('Password', 'password', 'password', 'Min. 8 characters', { req: true })}

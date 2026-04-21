@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const navItems = [
-  { path: '/about',       label: 'About' },
-  { path: '/how',         label: 'How It Works' },
-  { path: '/scholarships',label: 'Scholarships' },
-  { path: '/team',        label: 'Team' },
-  { path: '/contact',     label: 'Contact' },
-  { path: '/register',    label: 'Register' },
+  { path: '/about', label: 'About' },
+  { path: '/how', label: 'How It Works' },
+  { path: '/scholarships', label: 'Scholarships' },
+  { path: '/team', label: 'Team' },
+  { path: '/contact', label: 'Contact' },
 ];
 
 export default function Nav() {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { student, logout } = useAuth();
+
+  const initials = student
+    ? `${student.firstName?.[0] ?? ''}${student.lastName?.[0] ?? ''}`.toUpperCase()
+    : '';
 
   return (
     <nav>
@@ -31,6 +36,17 @@ export default function Nav() {
             </Link>
           </li>
         ))}
+        {/* Show Register link only when NOT logged in */}
+        {!student && (
+          <li>
+            <Link
+              to="/register"
+              style={{ color: location.pathname === '/register' ? 'var(--teal)' : '' }}
+            >
+              Register
+            </Link>
+          </li>
+        )}
       </ul>
 
       {/* Mobile hamburger */}
@@ -42,7 +58,15 @@ export default function Nav() {
         {menuOpen ? '✕' : '☰'}
       </button>
 
-      <Link to="/register" className="nav-cta">Register Free</Link>
+      {/* Right side CTA — changes based on auth state */}
+      {student ? (
+        <Link to="/profile" className="nav-profile-btn" title={`${student.firstName} ${student.lastName}`}>
+          <span className="nav-profile-avatar">{initials}</span>
+          <span className="nav-profile-name">{student.firstName}</span>
+        </Link>
+      ) : (
+        <Link to="/register" className="nav-cta">Register Free</Link>
+      )}
 
       {/* Mobile dropdown */}
       {menuOpen && (
@@ -57,6 +81,19 @@ export default function Nav() {
               {label}
             </Link>
           ))}
+          {student ? (
+            <>
+              <Link to="/profile" onClick={() => setMenuOpen(false)}>My Profile</Link>
+              <button
+                onClick={() => { logout(); setMenuOpen(false); }}
+                style={{ background: 'none', border: 'none', textAlign: 'left', padding: '10px 0', fontFamily: 'var(--font-body)', fontSize: '1rem', color: '#e05252', cursor: 'pointer', borderBottom: 'none' }}
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link to="/register" onClick={() => setMenuOpen(false)}>Register</Link>
+          )}
         </div>
       )}
     </nav>

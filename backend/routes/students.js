@@ -71,4 +71,16 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /api/register/:id — fetch a single student by ID (for profile)
+router.get('/:id', async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id, '-password');
+    if (!student) return res.status(404).json({ success: false, message: 'Student not found.' });
+    res.json({ success: true, student });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+
 module.exports = router;
