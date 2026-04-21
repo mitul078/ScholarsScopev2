@@ -5,15 +5,17 @@
 
 require('dotenv').config();
 const express = require('express');
-const cors    = require('cors');
+const cors = require('cors');
 const mongoose = require('mongoose');
 
-const app      = express();
-const PORT     = process.env.PORT     || 5000;
+const app = express();
+const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/scholarsscope';
 
 /* ── MIDDLEWARE ── */
-app.use(cors());
+app.use(cors({
+  origin: "*"
+}));
 app.use(express.json());
 
 /* ── MONGODB CONNECTION ── */
@@ -27,8 +29,8 @@ mongoose
 
 /* ── ROUTES ── */
 app.use('/api/check-eligibility', require('./routes/eligibility'));
-app.use('/api/register',          require('./routes/students'));
-app.use('/api/contact',           require('./routes/contact'));
+app.use('/api/register', require('./routes/students'));
+app.use('/api/contact', require('./routes/contact'));
 
 // Health check
 app.get('/api/health', (req, res) => {
