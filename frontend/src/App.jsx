@@ -11,7 +11,7 @@ import AboutPage from './pages/AboutPage';
 import HowItWorksPage from './pages/HowItWorksPage';
 import ScholarshipsPage from './pages/ScholarshipsPage';
 import CheckerPage from './pages/CheckerPage';
-import TeamPage from './pages/TeamPage';
+// import TeamPage from './pages/TeamPage';
 import RegisterPage from './pages/RegisterPage';
 import ContactPage from './pages/ContactPage';
 import ProfilePage from './pages/ProfilePage';
@@ -28,7 +28,7 @@ function App() {
           <Route path="/how" element={<HowItWorksPage />} />
           <Route path="/scholarships" element={<ScholarshipsPage />} />
           <Route path="/checker" element={<CheckerPage />} />
-          <Route path="/team" element={<TeamPage />} />
+          {/* <Route path="/team" element={<TeamPage />} /> */}
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/profile" element={<ProfilePage />} />
